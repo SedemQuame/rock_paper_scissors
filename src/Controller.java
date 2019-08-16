@@ -1,3 +1,5 @@
+import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -5,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.applet.Applet;
 import java.applet.AudioClip;
@@ -64,10 +67,16 @@ public class Controller implements Initializable {
     //    On Action Clicked.
     @FXML
     void onOptionClicked(ActionEvent event) {
+        playSound();
+
+        Button btn = (Button) event.getSource();
+//        Animating the buttons.
+//        Getting button position.
+
+
+
         drawMsg.setText("");
         totalPlays++;
-        Button btn = (Button) event.getSource();
-
 //        Declaring variables to hold human, and Programs choices.
         String ProgramsChoice, humansChoice = "";
         if (ProgramOption() == 0) {
@@ -90,21 +99,28 @@ public class Controller implements Initializable {
                 humansChoice = "scissors";
                 break;
         }
-
+        animateButton(btn, ProgramsChoice,  humansChoice);
         predictWinner(ProgramsChoice, humansChoice);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
     }
 
     @FXML
-    void restartGame(ActionEvent event) {
+    void restartGame() {
         noticeBoard.setVisible(false);
         programScore.setText("0");
         humanScore.setText("0");
         drawMsg.setText("-");
+
+        programRockOption.setDisable(false);
+        programPaperOption.setDisable(false);
+        programScissorsOption.setDisable(false);
+
+        humanRockOption.setDisable(false);
+        humanPaperOption.setDisable(false);
+        humanScissorsOption.setDisable(false);
     }
 
     private int ProgramOption() {
@@ -171,6 +187,14 @@ public class Controller implements Initializable {
     }
 
     private void printCongratulatoryMessage() {
+        programRockOption.setDisable(true);
+        programPaperOption.setDisable(true);
+        programScissorsOption.setDisable(true);
+
+        humanRockOption.setDisable(true);
+        humanPaperOption.setDisable(true);
+        humanScissorsOption.setDisable(true);
+
         if (numberOfTimesHumanWon > numberOfTimesProgramWon) {
             systemMessage.setText("Human Won.");
             //        funnygifimage.setImage("");
@@ -181,8 +205,8 @@ public class Controller implements Initializable {
         noticeBoard.setVisible(true);
     }
 
-    private void playSound(String pathToAudioFile) {
-        File file = new File(pathToAudioFile);
+    private void playSound() {
+        File file = new File("C:\\Users\\Quame\\Documents\\projects\\rock_paper_scissors\\assets\\audio_files\\rps_sound.wav");
         URL url = null;
         if (file.canRead()) {
             try {
@@ -193,5 +217,68 @@ public class Controller implements Initializable {
         }
         AudioClip clip = Applet.newAudioClip(url);
         clip.play();
+    }
+
+    private void animateButton(Button btn, String ProgramsChoice, String humansChoice){
+        Duration duration = Duration.millis(2500);
+        Button dummyBtn =null;
+
+        /*Animating the computer's choice.*/
+        TranslateTransition animateProgramsChoice = null;
+        switch (ProgramsChoice) {
+            case "rock":
+                animateProgramsChoice = new TranslateTransition(duration, programRockOption);
+                dummyBtn = programRockOption;
+                animateProgramsChoice.setByY(90);
+                animateProgramsChoice.setByX(180);
+                break;
+            case "paper":
+                animateProgramsChoice = new TranslateTransition(duration, programPaperOption);
+                dummyBtn = programPaperOption;
+                animateProgramsChoice.setByX(180);
+                break;
+            case "scissors":
+                animateProgramsChoice = new TranslateTransition(duration, programScissorsOption);
+                dummyBtn = programScissorsOption;
+                animateProgramsChoice.setByY(-90);
+                animateProgramsChoice.setByX(180);
+                break;
+        }
+        assert animateProgramsChoice != null;
+        animateProgramsChoice.setAutoReverse(true);
+        animateProgramsChoice.setCycleCount(2);
+        animateProgramsChoice.play();
+        scalingAnimation(duration, dummyBtn);
+
+
+        /*Animating the human's choice.*/
+        TranslateTransition animateHumansChoice = new TranslateTransition(duration, btn);
+
+        switch (humansChoice) {
+            case "rock":
+                animateHumansChoice.setByY(90);
+                animateHumansChoice.setByX(-180);
+                break;
+            case "paper":
+                animateHumansChoice.setByX(-180);
+                break;
+            case "scissors":
+                animateHumansChoice.setByY(-90);
+                animateHumansChoice.setByX(-180);
+                break;
+        }
+        animateHumansChoice.setAutoReverse(true);
+        animateHumansChoice.setCycleCount(2);
+        animateHumansChoice.play();
+        scalingAnimation(duration, btn);
+    }
+
+    private void scalingAnimation(Duration duration, Button btn){
+        ScaleTransition scaleTransition = new ScaleTransition(duration, btn);
+        scaleTransition.setByX(0.45);
+        scaleTransition.setByY(0.45);
+        scaleTransition.setAutoReverse(true);
+        scaleTransition.setCycleCount(2);
+        scaleTransition.play();
     }
 }
