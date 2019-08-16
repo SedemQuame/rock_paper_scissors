@@ -67,13 +67,12 @@ public class Controller implements Initializable {
     //    On Action Clicked.
     @FXML
     void onOptionClicked(ActionEvent event) {
-        playSound();
+//        playSound();
 
         Button btn = (Button) event.getSource();
+        systemMessage.setText("-");
 //        Animating the buttons.
 //        Getting button position.
-
-
 
         drawMsg.setText("");
         totalPlays++;
@@ -100,12 +99,14 @@ public class Controller implements Initializable {
                 break;
         }
         animateButton(btn, ProgramsChoice,  humansChoice);
+//        pause thread for a brief moment.
+//        pauseGame();
+//        toogleButtonDisability(false);
         predictWinner(ProgramsChoice, humansChoice);
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-    }
+    public void initialize(URL location, ResourceBundle resources) { }
 
     @FXML
     void restartGame() {
@@ -114,19 +115,18 @@ public class Controller implements Initializable {
         humanScore.setText("0");
         drawMsg.setText("-");
 
-        programRockOption.setDisable(false);
-        programPaperOption.setDisable(false);
-        programScissorsOption.setDisable(false);
-
-        humanRockOption.setDisable(false);
-        humanPaperOption.setDisable(false);
-        humanScissorsOption.setDisable(false);
+        // TODO: 16/08/2019 Disable buttons.
+        toogleButtonDisability(false);
     }
+
 
     private int ProgramOption() {
         Random random = new Random(System.currentTimeMillis());
-        return random.nextInt(3);
+        int number = random.nextInt(3);
+        random = null;
+        return number;
     }
+
 
     private void predictWinner(String ProgramsChoice, String humansChoice) {
         String errMsg = "Combination of choices is invalid.";
@@ -151,9 +151,9 @@ public class Controller implements Initializable {
         }
 
         // TODO: 15/08/2019
-        //  Add sounds/audio clip to project to make it fun
-        //  Animate Program and human choices.
-        //  Introduce a 1s or 2s pause before printCongratulatoryMessage()
+        //  Add sounds/audio clip to project to make it fun.
+        //  Animate Program and human choices. [Check]
+        //  Introduce a 1s or 2s pause before printCongratulatoryMessage().
 
         switch (winner) {
             case "human":
@@ -182,18 +182,14 @@ public class Controller implements Initializable {
         System.out.println(totalPlays);
     }
 
+
     private void printMessage(String msg) {
         systemMessage.setText(msg);
     }
 
-    private void printCongratulatoryMessage() {
-        programRockOption.setDisable(true);
-        programPaperOption.setDisable(true);
-        programScissorsOption.setDisable(true);
 
-        humanRockOption.setDisable(true);
-        humanPaperOption.setDisable(true);
-        humanScissorsOption.setDisable(true);
+    private void printCongratulatoryMessage() {
+        toogleButtonDisability(true);
 
         if (numberOfTimesHumanWon > numberOfTimesProgramWon) {
             systemMessage.setText("Human Won.");
@@ -205,8 +201,9 @@ public class Controller implements Initializable {
         noticeBoard.setVisible(true);
     }
 
-    private void playSound() {
-        File file = new File("C:\\Users\\Quame\\Documents\\projects\\rock_paper_scissors\\assets\\audio_files\\rps_sound.wav");
+
+    private void playSound(String audioFile) {
+        File file = new File(audioFile);
         URL url = null;
         if (file.canRead()) {
             try {
@@ -218,6 +215,7 @@ public class Controller implements Initializable {
         AudioClip clip = Applet.newAudioClip(url);
         clip.play();
     }
+
 
     private void animateButton(Button btn, String ProgramsChoice, String humansChoice){
         Duration duration = Duration.millis(2500);
@@ -250,7 +248,6 @@ public class Controller implements Initializable {
         animateProgramsChoice.play();
         scalingAnimation(duration, dummyBtn);
 
-
         /*Animating the human's choice.*/
         TranslateTransition animateHumansChoice = new TranslateTransition(duration, btn);
 
@@ -267,11 +264,26 @@ public class Controller implements Initializable {
                 animateHumansChoice.setByX(-180);
                 break;
         }
+
+        /*Disabling the clicked button to make sure that, they cannot be clicked again during the animation,
+        * since this brings about, the problem of adding another level of animation to the on going animation, hence distorting
+        * the initial layout of the gameboard. */
+        /* TODO: 16/08/2019 In future version of this application, some bug fixes will include.
+        *   1. making sure other buttons cannot be clicked during animation.
+        *   2. checking the position of the button on a ui, so as to get rid of the setDisable hack used.
+        *   3. make application modular, and multi-threaded. (i.e Application seems to have been created using the blocking IO model.
+        * */
+//
+//        dummyBtn.setDisable(true);
+//        btn.setDisable(true);
+
+
         animateHumansChoice.setAutoReverse(true);
         animateHumansChoice.setCycleCount(2);
         animateHumansChoice.play();
         scalingAnimation(duration, btn);
     }
+
 
     private void scalingAnimation(Duration duration, Button btn){
         ScaleTransition scaleTransition = new ScaleTransition(duration, btn);
@@ -280,5 +292,26 @@ public class Controller implements Initializable {
         scaleTransition.setAutoReverse(true);
         scaleTransition.setCycleCount(2);
         scaleTransition.play();
+    }
+
+
+    private void toogleButtonDisability(Boolean value){
+        //        Disable program options.
+        programRockOption.setDisable(value);
+        programPaperOption.setDisable(value);
+        programScissorsOption.setDisable(value);
+
+        //        Disable human options
+        humanRockOption.setDisable(value);
+        humanPaperOption.setDisable(value);
+        humanScissorsOption.setDisable(value);
+    }
+
+    private void pauseGame(){
+        try {
+            Thread.sleep(750);
+        }catch (InterruptedException ie){
+            Thread.currentThread().interrupt();
+        }
     }
 }
