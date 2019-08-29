@@ -30,6 +30,9 @@ public class Controller implements Initializable {
     private Label humanScore;
 
     @FXML
+    private Label numberOfTimesPlayed;
+
+    @FXML
     private Label drawMsg;
 
     @FXML
@@ -123,9 +126,7 @@ public class Controller implements Initializable {
 
     private int ProgramOption() {
         Random random = new Random(System.currentTimeMillis());
-        int number = random.nextInt(3);
-        random = null;
-        return number;
+        return random.nextInt(3);
     }
 
 
@@ -173,6 +174,8 @@ public class Controller implements Initializable {
                 break;
         }
 
+        numberOfTimesPlayed.setText(totalPlays + " move(s) made.");
+
         if (totalPlays >= 10) {
             printCongratulatoryMessage();
             totalPlays = 0;
@@ -195,12 +198,15 @@ public class Controller implements Initializable {
         if (numberOfTimesHumanWon > numberOfTimesProgramWon) {
             systemMessage.setText("Human Won.");
             image = new Image("file:/C:/Users/Quame/Documents/projects/rock_paper_scissors/assets/laughing_human.jpg");
-        } else {
+        } else if(numberOfTimesHumanWon == numberOfTimesProgramWon) {
+            systemMessage.setText("It's a draw.");
+            image = new Image("file:/C:/Users/Quame/Documents/projects/rock_paper_scissors/assets/human_shaking_computer.jpg");
+        }else {
             systemMessage.setText("Program Won.");
             image = new Image("file:/C:/Users/Quame/Documents/projects/rock_paper_scissors/assets/laughing_computer.jpg");
         }
         funnygifimage.setImage(image);
-
+        totalPlays = 0;
         noticeBoard.setVisible(true);
     }
 
@@ -221,7 +227,7 @@ public class Controller implements Initializable {
 
 
     private void animateButton(Button btn, String ProgramsChoice, String humansChoice){
-        Duration duration = Duration.millis(2500);
+        Duration duration = Duration.millis(1000);
         Button dummyBtn =null;
 
         /*Animating the computer's choice.*/
