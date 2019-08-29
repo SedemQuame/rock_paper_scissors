@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -190,14 +191,16 @@ public class Controller implements Initializable {
 
     private void printCongratulatoryMessage() {
         toogleButtonDisability(true);
-
+        Image image;
         if (numberOfTimesHumanWon > numberOfTimesProgramWon) {
             systemMessage.setText("Human Won.");
-            //        funnygifimage.setImage("");
+            image = new Image("file:/C:/Users/Quame/Documents/projects/rock_paper_scissors/assets/laughing_human.jpg");
         } else {
             systemMessage.setText("Program Won.");
-            //        funnygifimage.setImage("");
+            image = new Image("file:/C:/Users/Quame/Documents/projects/rock_paper_scissors/assets/laughing_computer.jpg");
         }
+        funnygifimage.setImage(image);
+
         noticeBoard.setVisible(true);
     }
 

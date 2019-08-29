@@ -171,10 +171,13 @@
                   <Insets left="25.0" right="25.0" />
                </VBox.margin>
             </Label>
-            <ImageView fx:id="funnygifimage" fitHeight="200.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="funnygifimage" fitHeight="200.0" fitWidth="250.0" pickOnBounds="true">
                <VBox.margin>
-                  <Insets left="75.0" right="75.0" />
+                  <Insets bottom="5.0" left="120.0" right="75.0" top="5.0" />
                </VBox.margin>
+               <image>
+                  <Image url="@../assets/laughing_human.jpg" />
+               </image>
             </ImageView>
             <Button fx:id="playAgainBtn" mnemonicParsing="false" onAction="#restartGame" prefHeight="35.0" prefWidth="150.0" style="-fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #dedede;" text="Play Again">
                <VBox.margin>
